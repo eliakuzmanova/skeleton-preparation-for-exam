@@ -14,12 +14,12 @@
 4. Add home controller
     * add controller to routes
 5. Connect database
-    * set strict query / deprecation warning -->
+    * set strict query / deprecation warning
 6. Authentication
     * fix html links in layout
     * add auth controller
     * add reigster page
-    * add login page
+    * add login page -->
 7. Add user model
 8. Add auth service
 9. Install bcrypt and cookie-parser and configure
