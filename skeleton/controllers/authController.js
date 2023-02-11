@@ -1,5 +1,11 @@
+
 const validator = require('validator')
 const authService = require("../services/authService")
+const getErrorMessage = require("../utils/errorUtils")
+
+const errorResponse = (res, template, erorr,status = 404) => {
+    return res.status(status).render(template, erorr)
+}
 
 exports.getRegisterView = (req, res) => {
     res.render("auth/register")
@@ -38,7 +44,7 @@ exports.postRegister = async (req, res) => {
         res.cookie("auth", token)
         res.redirect("/")
     } catch (err) {
-        res.status(404).render("auth/register", { errors: err });
+       errorResponse(res, "auth/register", err, 404);
     };
 
 
@@ -56,7 +62,7 @@ exports.postLogin = async (req, res) => {
         res.cookie("auth", token)
         res.redirect("/")
     } catch (err) {
-        return res.status(404).render("auth/login", { errors: err });
+        errorResponse(res, "auth/login", err, 404);;
     }
 }
 
