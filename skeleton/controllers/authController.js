@@ -19,14 +19,26 @@ exports.postRegister = async (req, res) => {
     if (password !== repeatPassword) {
         throw "Passwords missmatch"
     }
-
+console.log("before registration");
     try{
         await authService.register(username, email, password)
     } catch (err) {
         throw err.message
     }
+    console.log("after registration");
+
+    try{
+        console.log("before login");
+        const token = await authService.login(req, res ,email , password)
+        res.cookie("auth", token)
+        res.redirect("/")
+        console.log("after login");
+    } catch (err) {
+        throw err.message
+        
+    }
     
-    res.redirect("/login")
+
 }
 
 exports.getLoginView = (req, res) => {

@@ -4,9 +4,6 @@ const jwt = require("../utils/jsonwebtoken");
 exports.authentication = async (req, res, next) => {
 
     const token = req.cookies["auth"] 
-        console.log("req      " + req.path);
-
-        console.log(token + "<<--token");
 
     if (token) {
 
@@ -15,6 +12,8 @@ exports.authentication = async (req, res, next) => {
             const decodedToken = await jwt.verify(token, SECRET);
           
             req.user = decodedToken
+            res.locals.isAuthenticated = true;
+            res.locals.user = decodedToken
             // req.isAuthenticated = true;
         } catch (err) {
          

@@ -7,16 +7,18 @@ exports.register = async (username, email, password) => {
 
     const hashPassword = await bcrypt.hash(password, 10);
     
-
+console.log("after hash");
     //TODO Error Handling
     const existingUser = await this.findUser(username, email)
 //TODO Error Handling
+console.log("after searching user");
     if (existingUser) {
         throw "Existing user"
         return
         //throw new Error
     }
-   return await User.create({username, email, password: hashPassword})
+    console.log("before searching user");
+ return await User.create({username, email, password: hashPassword})
 
 };
 
@@ -40,8 +42,11 @@ exports.login = async(req,res ,email, password) => {
     throw "Indvalid password"
    }
 
-   res.user = existingUser
-   res.isAuthenticated = true;
+   req.user = existingUser
+    req.isAuthenticated = true;
+
+   res.locals.isAuthenticated = true;
+   res.locals.user = existingUser
 
    const payload = {
     userId: existingUser._id,
