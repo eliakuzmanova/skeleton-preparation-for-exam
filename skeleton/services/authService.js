@@ -50,6 +50,5 @@ exports.login = async(req,res ,email, password) => {
 
    const token = await jwt.sign(payload,SECRET);
 
-   res.cookie("auth", token)
    return token
 }

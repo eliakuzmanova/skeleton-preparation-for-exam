@@ -36,8 +36,12 @@ exports.getLoginView = (req, res) => {
 exports.postLogin = async(req, res) => {
     const {email, password} = req.body
 //TODO ERORR HANDLING
-
   const token = await authService.login(req, res ,email , password)
-  
+  res.cookie("auth", token)
+    res.redirect("/")
+}
+
+exports.getLogout = (req, res) => {
+    res.clearCookie("auth")
     res.redirect("/")
 }

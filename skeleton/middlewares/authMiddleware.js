@@ -1,16 +1,23 @@
-const SECRET = require("../utils/jsonwebtoken");
+const SECRET = require("../utils/secret");
 const jwt = require("../utils/jsonwebtoken");
 
-exports.authentication = (req, res, next) => {
+exports.authentication = async (req, res, next) => {
 
-    const token = req.cookies["auth"]
+    const token = req.cookies["auth"] 
+        console.log("req      " + req.path);
+
+        console.log(token + "<<--token");
 
     if (token) {
+
         try {
-            const decodedToken = jwt.verify(token, SECRET);
+            
+            const decodedToken = await jwt.verify(token, SECRET);
+          
             req.user = decodedToken
             // req.isAuthenticated = true;
         } catch (err) {
+         
             res.clearCookie("auth")
             return res.status(401).render("home/404")
         }

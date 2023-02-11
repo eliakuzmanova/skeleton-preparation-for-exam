@@ -19,7 +19,7 @@
     * fix html links in layout
     * add auth controller
     * add reigster page
-    * add login page -->
+    * add login page
 7. Add user model
 8. Add auth service
 9. Install bcrypt and cookie-parser and configure
@@ -37,7 +37,7 @@
 13. Add authentication middleware
     * add decoded token to request
     * use authentication middleware
-14. Logout
+14. Logout -->
 15. Authorization middleware
 16. Dynamic navigation
 17. Error handling (local error handling)
