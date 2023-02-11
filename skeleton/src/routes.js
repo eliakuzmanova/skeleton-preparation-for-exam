@@ -10,6 +10,6 @@ router.get("/register", authController.getRegisterView);
 router.post("/register", authController.postRegister);
 
 router.get("/login", authController.getLoginView);
-// router.post("/login", authController.postLogin);
+router.post("/login", authController.postLogin);
 
 module.exports = router

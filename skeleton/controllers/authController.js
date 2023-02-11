@@ -9,13 +9,23 @@ exports.postRegister = async (req, res) => {
  const {username, email, password, repeatPassword} = req.body
 
  //TODO : Error handling
-    validator.isStrongPassword(password)
+ try{
+    const validPass = validator.isStrongPassword(password)
+   
+ } catch(err){
+    throw Error(err.message)
+ }
 //TODO : Error handling
     if (password !== repeatPassword) {
-        res.redirect("/404")
+        throw "Passwords missmatch"
     }
 
-    await authService.register(username, email, password)
+    try{
+        await authService.register(username, email, password)
+    } catch (err) {
+        throw err.message
+    }
+    
     res.redirect("/login")
 }
 
@@ -23,6 +33,11 @@ exports.getLoginView = (req, res) => {
     res.render("auth/login")
 }
 
-// exports.postLogin = (req, res) => {
+exports.postLogin = async(req, res) => {
+    const {email, password} = req.body
+//TODO ERORR HANDLING
 
-// }
+  const token = await authService.login(req, res ,email , password)
+  
+    res.redirect("/")
+}
