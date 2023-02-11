@@ -6,19 +6,17 @@ const SECRET = require("../utils/secret");
 exports.register = async (username, email, password) => {
 
     const hashPassword = await bcrypt.hash(password, 10);
-    
-console.log("after hash");
-    //TODO Error Handling
-    const existingUser = await this.findUser(username, email)
-//TODO Error Handling
-console.log("after searching user");
-    if (existingUser) {
-        throw "Existing user"
-        return
-        //throw new Error
+
+    try{
+        const existingUser = await this.findUser(username, email)
+        
+        if(existingUser) {
+            throw Error("Existing user")
+        }
+        return await User.create({username, email, password: hashPassword})
+    } catch(err){ 
+        throw Error(err)
     }
-    console.log("before searching user");
- return await User.create({username, email, password: hashPassword})
 
 };
 
@@ -28,32 +26,37 @@ exports.findUserByEmail = (email) => User.findOne({email})
 
 exports.login = async(req,res ,email, password) => {
 
-    const existingUser = await this.findUserByEmail(email);
+     try{
+        
+        const existingUser = await this.findUserByEmail(email)
+         
+        if(!existingUser) {
+            throw Error("Invalid email");
+        }
 
-   if(!existingUser) {
-    throw "Indvalid user"
-    //TODO handle error
-   }
-  
-   const isValid = await bcrypt.compare(password, existingUser.password)
+        const isValid = await bcrypt.compare(password, existingUser.password)
+ 
+        if(!isValid){
+          throw Error("Invalid password")
+        }
 
-   if(!isValid){
-    //TODO handle error
-    throw "Indvalid password"
-   }
+        req.user = existingUser
+        req.isAuthenticated = true;
+    
+       res.locals.isAuthenticated = true;
+       res.locals.user = existingUser
+    
+       const payload = {
+        userId: existingUser._id,
+         userEmail: existingUser.email
+        }
 
-   req.user = existingUser
-    req.isAuthenticated = true;
+        const token = await jwt.sign(payload,SECRET);
 
-   res.locals.isAuthenticated = true;
-   res.locals.user = existingUser
+        return token
 
-   const payload = {
-    userId: existingUser._id,
-     userEmail: existingUser.email
+    } catch(err){ 
+        throw Error(err)
     }
-
-   const token = await jwt.sign(payload,SECRET);
-
-   return token
+  
 }

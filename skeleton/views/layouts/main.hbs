@@ -29,6 +29,13 @@
             </ul>
         </nav>
     </header>
+    {{#if errors}}
+    <div>
+        <div class="errorContainer">
+            <p>{{errors}}</p>
+        </div>
+    </div>
+    {{/if}}
     {{{body}}}
     <footer>
         <p>Back-End 2022</p>

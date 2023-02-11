@@ -6,38 +6,41 @@ exports.getRegisterView = (req, res) => {
 }
 
 exports.postRegister = async (req, res) => {
- const {username, email, password, repeatPassword} = req.body
+    const { username, email, password, repeatPassword } = req.body
 
- //TODO : Error handling
- try{
-    const validPass = validator.isStrongPassword(password)
-   
- } catch(err){
-    throw Error(err.message)
- }
-//TODO : Error handling
-    if (password !== repeatPassword) {
-        throw "Passwords missmatch"
-    }
-console.log("before registration");
-    try{
+
+    try {
+        if(!username) {
+            throw Error("Username is required")
+        }
+
+        if(!email) {
+            throw Error("Email is required")
+        }
+        if(!password) {
+            throw Error("Password is required")
+        }
+        if(!repeatPassword) {
+            throw Error("Confirm password is required")
+        }
+        const validPass = validator.isStrongPassword(password)
+        if (!validPass) {
+            throw Error("Not enough strong password")
+        }
+
+        if (password !== repeatPassword) {
+            throw Error("Passwords missmatch")
+        }
+
         await authService.register(username, email, password)
-    } catch (err) {
-        throw err.message
-    }
-    console.log("after registration");
 
-    try{
-        console.log("before login");
-        const token = await authService.login(req, res ,email , password)
+        const token = await authService.login(req, res, email, password)
         res.cookie("auth", token)
         res.redirect("/")
-        console.log("after login");
     } catch (err) {
-        throw err.message
-        
-    }
-    
+        res.status(404).render("auth/register", { errors: err });
+    };
+
 
 }
 
@@ -45,13 +48,18 @@ exports.getLoginView = (req, res) => {
     res.render("auth/login")
 }
 
-exports.postLogin = async(req, res) => {
-    const {email, password} = req.body
-//TODO ERORR HANDLING
-  const token = await authService.login(req, res ,email , password)
-  res.cookie("auth", token)
-    res.redirect("/")
+exports.postLogin = async (req, res) => {
+    const { email, password } = req.body
+    //TODO ERORR HANDLIN
+    try {
+        const token = await authService.login(req, res, email, password)
+        res.cookie("auth", token)
+        res.redirect("/")
+    } catch (err) {
+        return res.status(404).render("auth/login", { errors: err });
+    }
 }
+
 
 exports.getLogout = (req, res) => {
     res.clearCookie("auth")
